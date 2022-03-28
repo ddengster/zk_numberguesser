@@ -13,7 +13,7 @@ Manages:
 - Keeps track of game results
 
 *****/
-contract GuessTheNumberGameLayer is GuessTheNumber, Verifier2 {
+contract GuessTheNumberGameLayer is GuessTheNumber, Verifier {
   using Counters for Counters.Counter;
   
   // game ownership states
@@ -34,16 +34,21 @@ contract GuessTheNumberGameLayer is GuessTheNumber, Verifier2 {
   Counters.Counter private _gameIdCounter;
 
   // public api
-  function InitiateGame(Verifier2.Proof memory p, uint[2] memory input, uint256 myhash) external returns(uint256)
+  function InitiateGame(Verifier.Proof memory p, uint[4] memory io) external returns(uint256)
   {
+    bool valid = verifyTx(p, io);
+    require(valid == true);
+    
+    uint evaluation = io[3];
+    require(evaluation == 0);
 
-    bool result = verifyTx(p, input);
-    require(result == true);
-    //bool result = verifyProof();
-    //require(result == true);
+    uint lowerrange = io[1];
+    uint upperrange = io[2];
+    require(lowerrange < upperrange); //an additional check, likely remove for gas savings?
 
+    uint secretnumber_hash = io[0];
     Game memory game = Game(GameStatus.WAITING, msg.sender, address(0),
-      0, 0, 0);
+      secretnumber_hash, 0, 0);
 
     uint256 id = _gameIdCounter.current();
     mGameIdToGameMapping[id] = game;
