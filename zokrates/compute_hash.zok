@@ -1,0 +1,8 @@
+
+import "hashes/pedersen/512bit.zok" as pedersen
+import "utils/pack/u32/pack256.zok" as pack256
+
+def main(private u32 hidden_val) -> field:
+  u32[8] computed_hash_u32 = pedersen([0, 0, 0, 0, hidden_val, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+  field computed_hash = pack256(computed_hash_u32)
+  return computed_hash

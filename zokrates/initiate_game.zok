@@ -1,0 +1,18 @@
+import "hashes/pedersen/512bit.zok" as pedersen
+import "utils/casts/field_to_u32.zok" as field_to_u32
+import "utils/pack/u32/pack256.zok" as pack256
+
+def main(private u32 hidden_val, field hash) -> field:
+  u32[8] computed_hash_u32 = pedersen([0, 0, 0, 0, hidden_val, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+  field computed_hash = pack256(computed_hash_u32)
+  field hash_complete = if hash == computed_hash then 1 else 99 fi // for proof
+  return hash_complete
+
+/*
+
+- Maliciousness scenarios in trying to submit a proof
+
+For someone trying to 
+1) remove all asserts in this function, compile and generate the proof with the hidden value outside the range
+
+*/
