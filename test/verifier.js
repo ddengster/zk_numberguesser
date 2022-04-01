@@ -43,9 +43,6 @@ contract("Verifier", (accounts)=> {
     };
 
     const result = await contractInstance.verifyTx(proof.proof, proof.inputs);
-    console.log(result);
-    let res = result.toString(); // BigNum type
-    console.log(res);
     assert.equal(result, true);
   });
 
@@ -84,9 +81,6 @@ contract("Verifier", (accounts)=> {
     };
 
     const result = await contractInstance.verifyTx(proof.proof, proof.inputs);
-    console.log(result);
-    let res = result.toString(); // BigNum type
-    console.log(res);
     assert.equal(result, true);
   });
 
@@ -126,9 +120,6 @@ contract("Verifier", (accounts)=> {
     };
 
     const result = await contractInstance.verifyTx(proof.proof, proof.inputs);
-    console.log(result);
-    let res = result.toString(); // BigNum type
-    console.log(res);
     assert.equal(result, true);
     
   });
