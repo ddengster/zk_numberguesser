@@ -1,7 +1,9 @@
 
-# Zero Knowledge Number Guessing
+# Zero Knowledge Number Guessing Game
 
 A number guessing game on the ethereum blockchain using Zokrates.
+
+![Screenshot](img/Sample.PNG?raw=true)
 
 ## How it works
 
@@ -73,7 +75,7 @@ const player2Addr = ...;
 
 4) If computing a witness, `zokrates compute-witness` uses the binary to output a witness file. Then `zokrates generate-proof` uses the binary, the `witness` file, and the `proving.key` to output `proof.json`. You can then use that json as input to your generated solidity contract or use `zokrates verify` that takes the `proof.json` and the `verification.key` from step 1 to verify if the proof is generated correctly.
 
-# References:
+## References:
 
 - Devcon presentation, yt
 https://docs.google.com/presentation/d/1gfB6WZMvM9mmDKofFibIgsyYShdf0RV_Y8TLz3k1Ls0/edit#slide=id.g443fe0d9f5_0_136
