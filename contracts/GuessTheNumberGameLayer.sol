@@ -14,7 +14,7 @@ Manages:
 - Keeps track of game results
 
 *****/
-contract GuessTheNumberGameLayer is GuessTheNumber {
+contract GuessTheNumberGameLayer is GuessTheNumber, InitiateGameVerifier, EvalGuessVerifier {
   using Counters for Counters.Counter;
   
   enum GameStatus  { WAITING, VALIDATION, GUESSING, FINISHED }
@@ -37,10 +37,9 @@ contract GuessTheNumberGameLayer is GuessTheNumber {
   event NewGameInitiation(uint256 newgameid);
 
   // public api
-  function InitiateGame(InitiateGameVerifier.Proof memory p, uint[4] memory io) external returns(uint256)
+  function InitiateGame(InitiateGameVerifier.IG_Proof memory p, uint[4] memory io) external returns(uint256)
   {
-    InitiateGameVerifier i_verifier = new InitiateGameVerifier();
-    bool valid = i_verifier.verifyTx(p, io);
+    bool valid = IG_verifyTx(p, io);
     require(valid == true);
     
     uint evaluation = io[3];
@@ -62,47 +61,47 @@ contract GuessTheNumberGameLayer is GuessTheNumber {
     return id;
   }
 
+  event GameStarted(address initiator, address guesser);
   function JoinGame(uint256 gameid) external
   {
     Game storage game = mGameIdToGameMapping[gameid];
-    require(game.mStatus == GameStatus.WAITING);
-    require(game.mInitiator != address(0));
-    require(game.mGuesser == address(0));
+    require(game.mStatus == GameStatus.WAITING, "Game not in WAITING state!");
+    require(game.mInitiator != msg.sender, "Initiator may not join a game it created!");
+    require(game.mGuesser == address(0), "Guesser must be null!");
 
     game.mGuesser = msg.sender;
     game.mStatus = GameStatus.GUESSING;
+    emit GameStarted(game.mInitiator, game.mGuesser);
   }
 
-  event GuessMade(uint256 gameid, uint32 guess);
+  event GuessMade(uint256 gameid);
   function MakeGuess(uint256 gameid, uint32 guess) external
   {
     Game storage game = mGameIdToGameMapping[gameid];
-    require(game.mStatus == GameStatus.GUESSING);
-    require(game.mInitiator != address(0));
-    require(game.mGuesser == msg.sender);
+    require(game.mStatus == GameStatus.GUESSING, "Game not in GUESSING state!");
+    require(game.mGuesser == msg.sender, "Only guesser can call this function!");
     
     game.mCurrentGuess = guess;
     game.mStatus = GameStatus.VALIDATION;
-    emit GuessMade(gameid, guess);
+    emit GuessMade(gameid);
   }
 
   function NeedsValidation(uint256 gameid) external view returns(bool)
   {
     Game storage game = mGameIdToGameMapping[gameid];
-    require(game.mInitiator == msg.sender); // only called by initiator, replace with modifier
+    require(game.mInitiator == msg.sender, "Only initiator can call this function!"); // only called by initiator, replace with modifier
     return game.mStatus == GameStatus.VALIDATION;
   }
 
   event SuccessfulGuess(uint256 gameid);
   event CanGuessAgain(uint256 gameid, GuessResult result);
-  function MakeValidation(uint256 gameid, EvalGuessVerifier.Proof memory proof, uint[3] memory io) external
+  function MakeValidation(uint256 gameid, EvalGuessVerifier.EV_Proof memory proof, uint[3] memory io) external
   {
     Game storage game = mGameIdToGameMapping[gameid];
-    require(game.mStatus == GameStatus.VALIDATION);
-    require(game.mInitiator == msg.sender); // only called by initiator
+    require(game.mStatus == GameStatus.VALIDATION, "Game not in VALIDATION state!");
+    require(game.mInitiator == msg.sender, "Only initiator can call this function!"); // only called by initiator
 
-    EvalGuessVerifier verifier = new EvalGuessVerifier();
-    bool valid = verifier.verifyTx(proof, io);
+    bool valid = EV_verifyTx(proof, io);
     require(valid == true);
 
     require(game.mHashProof == io[0]);
@@ -144,10 +143,19 @@ contract GuessTheNumberGameLayer is GuessTheNumber {
   function GetGuess(uint256 gameid) external view returns(uint32) 
   {
     Game storage game = mGameIdToGameMapping[gameid];
-    require(game.mStatus == GameStatus.VALIDATION);
-    require(game.mInitiator == msg.sender);
+    require(game.mStatus == GameStatus.VALIDATION, "Game not in VALIDATION state!");
+    require(game.mInitiator == msg.sender, "Only initiator may access the guess!");
     //0: initial guess, 1: number greater than guess, -1: number less than guess
     return game.mCurrentGuess;
+  }
+  
+  function MintToken(uint256 gameid) external returns(uint256)
+  {
+    Game storage game = mGameIdToGameMapping[gameid];
+    require(game.mStatus == GameStatus.FINISHED, "Game not finished!");
+    require(game.mGuesser == msg.sender, "Only guesser can mint the token!");
+    _safeMint(game.mGuesser, gameid);
+    return gameid;
   }
 
 

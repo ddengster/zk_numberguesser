@@ -4,26 +4,26 @@ const BigNumber = require('bignumber.js');
 
 contract("GuessTheNumberGameLayer", (accounts)=> {
 
-  // compute_witness.bat initiate_game 3 8317554905031743436470060412079836410388093405773061122028896578523632029169 1 5
+  // initiate_game.bat initiate_game 3 8317554905031743436470060412079836410388093405773061122028896578523632029169 1 5
   let proof = {
     "proof": {
       "a": [
-        "0x15f3e7abef87d756c0993e279c67774db0f3adf67ef21f480d7c46f4f425f702",
-        "0x035792544c8ab7040369eb18d2af11c9a3b825ec694c87891a26e901235b2855"
+        "0x2b9f04515548c60b2d5f713c9d046f172b0d67e3df5fe4847cf479f0a8818bbe",
+        "0x29c1c9091f618a5e25eb5400e6c70c6a77f2d53f34f6654abb2b87ca187ae819"
       ],
       "b": [
         [
-          "0x156aaffdb48c0cccb681286ca9b892590da0fe7aebec1c189cdc2a9e4fd85249",
-          "0x21d19ebcfac0191a84438015f4151850d49f04e67a20edad3d4278944c616a73"
+          "0x24b7d894561776efd697179bacccb3283a8fc17824eae0fcedf290357e802572",
+          "0x06ade3553690a716dfe3fea66c0a33b04b0b8f529832e6902c52828cb26e0c5a"
         ],
         [
-          "0x1c3a8294bebeaa063c7ec4d04b73744ce95d39b64ba882c5495318012780a8a7",
-          "0x271e49c008a662468eb7ca007de6718921969b8e496139d766ff354a56a2f9ac"
+          "0x0e57ac7541344ff06ba67937bb74d7205a7193f5ab6828a3496aa2459e46d88f",
+          "0x2a92e20712cfd116b576df823ec0c88b2efdee69b163ab2727125b25bade0017"
         ]
       ],
       "c": [
-        "0x199d4b96088c63d2628d1b2cef90a2545f353dd3c703e84a250d5629ce9ff848",
-        "0x180aee602b4b2122070ad26ed27d76fd156abf264f428aee4ca67f263d841fed"
+        "0x1f11deae71b392a338f3099ba83de267343e6c46f84c99d5dca61474534cbef3",
+        "0x0acb9f141c5b7d778db0092218952ebb911c598261e591988e2cd75903d193f4"
       ]
     },
     "inputs": [
@@ -42,7 +42,7 @@ contract("GuessTheNumberGameLayer", (accounts)=> {
     console.log(contractInstance.address);
   });
 
-  xit("Initiate multiple games", async () => {
+  it("Initiate multiple games", async () => {
     const result = await contractInstance.InitiateGame(proof.proof, proof.inputs, {from: alice});
     assert.equal(result.logs[0].event, "NewGameInitiation");
     assert.equal(result.logs[0].args[0], 0);
@@ -81,27 +81,27 @@ contract("GuessTheNumberGameLayer", (accounts)=> {
     assert.equal(result5, 2);
 
     // run: 
-    // compute_witness.bat eval_guess 3 8317554905031743436470060412079836410388093405773061122028896578523632029169 2
+    // eval_guess.bat eval_guess 3 8317554905031743436470060412079836410388093405773061122028896578523632029169 2
     // and generate the proof.json for another verification
     const proof_secret_more_than = {
       "proof": {
         "a": [
-          "0x09e05ee4feb4ccb0a905df68c3697235d2b9da3513aa77c36ffb5409683e93ae",
-          "0x2cfc6f92bd28a2125befedf78fea5d288318af2f81f8ed3fb54f8822d21443d1"
+          "0x0753719226eed3ca5fdbe8b6d0a105102d41f6608ec1222fbe72b5306850843b",
+          "0x1b3aa2dabdebd0c1bb308bd221c2c35da648747982b9fd730aba3b6cdc39a355"
         ],
         "b": [
           [
-            "0x21fe88187c70f97e508728a41d5013f1978132cb5751ca42d716976953881046",
-            "0x0922657657d7d3c3f38e702c31bda48ea8e2b1122b41e94d15b76f99ff44d4fc"
+            "0x119586b0ee8e3faad8e58ebccedee31ba7ad1d47c91d897d5a04c704d88382a8",
+            "0x02c1ed4f3a4321b351cf20a7834287b33fcf14bbbce21d8b8fe2257cbe3cf8c0"
           ],
           [
-            "0x0c9a459e36acecb9afd47e7872b4837fd8eed75a5840e4d3a70a58617085aa23",
-            "0x052d6c274f7fcf3aca67275c5679aaf7d8659bf8e99d48c4b896edcc69b2f20e"
+            "0x17ce458f2d203e3faa4e231a349560d142d639fccfdea144267bca1197609a9f",
+            "0x1403b620a15795cd868505cd3588c0f88b282d5f65816aa6360f7d0447bfd776"
           ]
         ],
         "c": [
-          "0x15981fcdc80924e93f972032b9ca84a40114b41d19e5e5df8d9bbc1b1f6f251a",
-          "0x16e937b7d8deba86d9b308938bdea9700d8345a20cebcf35d75c75efe7aca2d6"
+          "0x192b1b504aa040c3cff6df1b66389ecbcc06e348b49730b939f1d2f9322f7dd3",
+          "0x1891833a6c4a77d83370abdfab42ad2ed9deff9b77ee09a93607de4aefff3831"
         ]
       },
       "inputs": [
@@ -122,27 +122,27 @@ contract("GuessTheNumberGameLayer", (accounts)=> {
     assert.equal(result7.logs[0].args[1], guess);
     
     // run: 
-    // compute_witness.bat eval_guess 3 8317554905031743436470060412079836410388093405773061122028896578523632029169 4
+    // eval_guess.bat eval_guess 3 8317554905031743436470060412079836410388093405773061122028896578523632029169 4
     // and generate the proof.json for another verification
     const proof_secret_less_than = {
       "proof": {
         "a": [
-          "0x0078165ebefa9dd145ce08f62d089d5e474816132171ed7ec4630e83a3bd8744",
-          "0x28256228b7b586cc1826d34386e92aaafe28a087df3f5e0e421d2661958eb9c7"
+          "0x04b427ee98cc0c41c3635cfed2bda34964be77002df41d4ad84419454dfe4de9",
+          "0x17589056d1a5239b956d1ea36eec46a7bc39e12f648caf4c6d41028b6b1af3cf"
         ],
         "b": [
           [
-            "0x2e9f02d49a63da0b42f4ee0675e99d956cd6494e736882f17e577f7ba42ada35",
-            "0x19950ebabae7f20e974b50f5dfcb29de17f00b45563c0a7002c0c11d3a503141"
+            "0x0d31d5184872bb1046a5ad424c578a75a4dd00a1dca682f4d6dd30b740f25448",
+            "0x11d84f80e5630cebd9002bdb7e25dce173a02adbe7d31931896eb9e555cc3e79"
           ],
           [
-            "0x223b845e9b269913b276c51aec3117ba8fa8d7ddd4adfc935078511a9f6d0296",
-            "0x08226aac7ee559fe6aa1ed5194b364cfb5b220fc56a9f7410f07d60d2d72261c"
+            "0x20cdae37c2aec820ec6b142b6626713620294ee1e2295a499ea217bebe2b8062",
+            "0x06c1b842ed576f466fe71fcc81fdb868797b31fba61c184204ccb81b66b8289d"
           ]
         ],
         "c": [
-          "0x1a9b48d15b7757c6e12918baf371e9be5a5e3c7433ff85c38e72f636f806747f",
-          "0x26dbef7c71231e7f6dcc50322a4ab39b0a4ad441364af6e8ce0c4a1b9542d722"
+          "0x2996a97c35794ef520810b4e2ff1ebd3057cba970ce6503b020c5a3f3a560f04",
+          "0x23dd7df32caaa7dc6757d48c24854c74de4324bdbccae503dd64d898fc534505"
         ]
       },
       "inputs": [
@@ -163,27 +163,27 @@ contract("GuessTheNumberGameLayer", (accounts)=> {
     assert.equal(result9.logs[0].args[1], guess);
 
     // run: 
-    // compute_witness.bat eval_guess 3 8317554905031743436470060412079836410388093405773061122028896578523632029169 4
+    // eval_guess.bat eval_guess 3 8317554905031743436470060412079836410388093405773061122028896578523632029169 3
     // and generate the proof.json for another verification
     const proof_secret_found = {
       "proof": {
         "a": [
-          "0x01d020b7be5cf356a3b2428d72243ffc3ce65efbb64cf2d7939a95d7ab7616fc",
-          "0x300d4526a2d956e182fbcde3a14d2b00f8a8a0da73945125179df91512b34ba0"
+          "0x0b9319ac20184e1d1488c9461144c07c1087a0e01efd28a544ae9aa4bcef7b48",
+          "0x079d34157741dc95c3b63f2314d43da8b4620d607cf8e3b2daeedb9029e1555e"
         ],
         "b": [
           [
-            "0x0c5b2f2ebf8dba0258920366069b99a11a7641b6469d109939cfa49015fc39e4",
-            "0x2eb44d5282a3a12cb6b83383e5689eba2e33608e724ca8adf9bdaf13658b3bd7"
+            "0x0eacf0d81f8d9d26c060a1555332a6c736c6fad45a711c2766b1043035f984c4",
+            "0x01920b4b28cf966ee9b013e34176ef96a88e15fe8fd285650437f16205249004"
           ],
           [
-            "0x017018e6f1ade5cf16b1e95260bde4e593f32af392f2c5d29faaeabc56ba81e4",
-            "0x1f5e21abf66e5c47d6fdb333d857618b68da4899b647c70e16caf7c6826ebc0b"
+            "0x129fba36d792608bd2a5f42628af5ef9455dc4e08117a670c235693f161211b4",
+            "0x21ca0307f1fb1893c0e9c28f954da55a43d0d0cd9289b9a41fb976273d4d3cf0"
           ]
         ],
         "c": [
-          "0x165999b536169a136637da9a4fd0c326e8b3c03c5f966968bc5a6d722434337a",
-          "0x08864673de687c97c249ca57af550b743665bb133fb052e13703bdaa82faafe2"
+          "0x0105651542b766c076768ebdd91e1e3113084c418f1dd9d5a05476c08957b5b4",
+          "0x2fb66612b67e8e7c14fa950a50e209ec67b0293d2c74fc593e24780baae35f4a"
         ]
       },
       "inputs": [

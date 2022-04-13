@@ -69,3 +69,11 @@ The moment when you realize making zk-proofs from ranges is a harder problem tha
 - https://crypto.stackexchange.com/questions/53745/is-it-possible-to-create-a-zero-knowledge-proof-that-a-number-is-more-than-zero
 
 - https://crypto.stackexchange.com/questions/42019/zero-knowledge-proof-for-sign-of-message-value/42029#42029
+
+## Todos:
+
+- uploading invalid games via initiate_game_bad and lopsided ranges
+
+- determine gas costs
+
+- deployment to any eth testnet blockchain

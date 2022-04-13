@@ -1,0 +1,104 @@
+
+ <!DOCTYPE html>
+ <html style="background-color: #4937ac">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Guess the number!</title>
+    
+    <!-- <script src="./bundle.js" defer></script> -->
+    <!-- <script src="./web3.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js" crossorigin="anonymous"></script>
+    <script src="./app.js" defer></script>
+  </head>
+   
+  <body>
+  
+    <h1>Guess the number!</h1>
+    <span style="color:greenyellow">Player 1 (Host) - Green</span>
+    <br>
+    <span style="color:cyan">Player 2 (Guesser) - Cyan</span>
+
+    <br>
+
+    <div class="flex-container" style="display:flex;justify-content: space-around;">
+      <div style="color:greenyellow">
+        <h2>Initiate a game..</h2>
+        <form>
+          <p>Lower range: <input type="number" name="LowerRange" required id="lowerrange"></p>
+          <p>Higher range: <input type="number" name="HigherRange" required id="upperrange"></p>
+          <p>Secret Number: <input type="number" name="Secret Number" required id="secretnum"></p>
+          <button type="submit" class="initiate_game_btn">Initiate Game</button>
+        </form>
+
+        <br>
+        <span id="initiate_game_status" style="color: red; font-size: 20px"></span>
+        <br>
+        <span id="initiate_game_gas" style="color: red; font-size: 14px"></span>
+      </div>
+
+      <div style="color:cyan">
+        <h2>Join a game..</h2>
+        <form>
+          <p>GameId: <input type="number" name="Join Game Id" required id="join_game_input"></p>
+          <button type="submit" class="join_game_btn">Join Game</button>
+
+          <br>
+          <span id="join_game_status" style="color: red; font-size: 20px"></span>
+          <br>
+          <span id="join_game_gas" style="color: red; font-size: 14px"></span>
+        </form>
+      </div>
+
+      <div style="color:cyan">
+        <h2>Make a guess..</h2>
+        <form>
+          <p>GameId: <input type="number" name="Guess Game Id" required id="guess_game_id"></p>
+          <p>Guess: <input type="number" name="Guess" required id="guess"></p>
+          <button type="submit" class="guess_game_btn">Make a guess..</button>
+
+          <br>
+          <span id="guess_game_status" style="color: red; font-size: 20px"></span>
+          <br>
+          <span id="guess_game_gas" style="color: red; font-size: 14px"></span>
+        </form>
+      </div>
+
+      <div style="color:greenyellow">
+        <h2>Get & Verify the guess..</h2>
+        <form>
+          <p>GameId: <input type="number" name="Verify Game Id" required id="verify_game_id"></p>
+          <button type="submit" class="verify_game_btn">Get & Verify guess</button>
+
+          <br>
+          <span id="verify_game_status" style="color: red; font-size: 20px"></span>
+          <br>
+          <span id="verify_game_result" style="color: red; font-size: 20px"></span>
+          <br>
+          <span id="verify_game_gas" style="color: red; font-size: 14px"></span>
+        </form>
+      </div>
+  </div>
+
+  <div style="text-align: center; padding-top: 20px;color:cyan">
+    <h2>If you've guessed correctly, mint your token here!</h2>
+    <p>GameId: <input type="number" name="MintToken Game Id" required id="mint_game_id"></p>
+    <button class="mint_token_btn">Mint my token!</button>
+
+    <br>
+    <span id="mint_token_status" style="color: red; font-size: 20px"></span>
+    <br>
+    <span id="mint_token_gas" style="color: red; font-size: 14px"></span>
+  </div>
+
+  <hr>
+  <div>
+    <h3>Event Log</h3>
+    <span id="ConsoleLog" style="font-family:Consolas;font-size: small;">
+
+    </span>
+  </div>
+    
+  </body>
+ </html> 
+ 
