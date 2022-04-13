@@ -1,52 +1,77 @@
 
-- `npm install @openzeppelin/contracts`
+# Zero Knowledge Number Guessing
 
-- `cd zokrates`
+A number guessing game on the ethereum blockchain using Zokrates.
+
+## How it works
+
+- Initiator starts a game with a secret number
+
+- Initiator run a program with the secret number, it's hash, and 2 additional numbers specifying a range. The program, after verification/checking, spits out commits a proof of the computation. This proof is verified via smart contract before storing the values on the blockchain.
+
+- Players submit number guesses to the blockchain
+
+- Initiator reads the number guesses, and submits either 'yay', 'higher' or 'lower' and a proof of that computation. The smart contract verifies it, and updates the game state. This is repeated until the guess is correct.
+
+- Players may claim an nft if successful
+
+## Requirements & installation
+
+- GO compiler, version 1.18 windows/amd64
+
+- Download the windows version of Zokrates from https://github.com/Zokrates/ZoKrates/releases and unzip it into the `zokrates` folder. Make sure the `stdlib` folder is there
+
+- Truffle, a blockchain testing suite from https://trufflesuite.com/docs/truffle/getting-started/installation/
+
+- Ganache, personal development blockchain https://trufflesuite.com/docs/ganache/quickstart/
+
+- `git clone` this repository and run `npm install`
+
+## Running
+
+- Setup and compile the zokrates programs. `cd zokrates` and run 
+
+```
+compile_setup.bat compute_hash
+compile_setup.bat initiate_game
+compile_setup.bat eval_guess
+```
+
+- Run the local backend server in one terminal via `cd backend && go run zokrates_server.go`
+
+- Run ganache -> `QuickStart`, then click on the `Settings` gear and link `truffle-config.js` under the workspace tab, then hit `Save and Restart`
+
+- Within ganache under the accounts tab, copy 2 addresses and paste them in `frontend/app.js` like so
+
+```
+const contract_addr = ...;
+const player1Addr = "<ganache account address #1>";
+const player2Addr = "<ganache account address #2>";
+```
+
+- Run truffle migrate and copy the contract address of 'GuessTheNumberGameLayer' and paste it into `frontend/app.js` like so
+
+```
+const contract_addr = "<your contract address here>";
+const player1Addr = ...;
+const player2Addr = ...;
+```
+
+- Launch `frontend/index.html`, execute the steps left to right.
+
+- Or `truffle test` to run tests.
 
 ## Generating/using verifier code
 
 ### The zokrates general program flow:
 
-1) Compile a program: `zokrates.exe compile -i initiate_game.zok -o initiate_game_bin --stdlib-path ./<path_to_stdlib>`, spits out an `initiate_game_bin` file
+1) To get started, you'll have to compile and setup the programs. `zokrates compile` spits out a `_bin` binary and `abi.json`, while `zokrates setup` spits out `proving.key` and `verification.key`
 
-2) `zokrates setup -i initiate_game_bin`, spits out `proving.key` and `verification.key`
+2) From then on you may decide to export a solidity verifier or compute a witness using the binary.
 
-3) Compute a witness to your secret using the compiled `initiate_game_bin` program. Input your hidden value, and lower/upper range (eg. 5 is hidden number, ranged 1 to 10):
-`zokrates compute-witness -i initiate_game_bin -o initiate_game_witness --verbose -a 5 1 10`. Outputs a `initiate_game_witness` file. Also outputs the return value of the function.
+3) If exporting the verifier, `zokrates export-verifier-i verification.key -o ../contracts/verifier.sol` takes in the generated verification key from the `setup` step and outputs . You'll then have to integrate it into your contract code.
 
-4) For checking, generate a `proof.json` via `zokrates generate-proof -i initiate_game_bin -w initiate_game_witness`, using `proving.key`, `out` and `witness` as input. Then `zokrates verify` to verify the generated `proof.json` using `verification.key`.
-
-5) `zokrates export-verifier -o ../contracts/verifier.sol` to export solidity verifier code using `verification.key`. Before commiting data to your smart contract, call the `verifyTx` function with values from `proof.json` coupled with the range and hash and ensure the returned value is true.
-
-### Workflow
-
-- Do steps 1-3, but modify the code to return the hash instead. When computing the witness, 
-
-Our solidity verifier code is put on the blockchain; treat it like an escrow that knows no actual secret values. It just knows a way verify all the things given to it
-
-- 
-
-# Guess the number via the blockchain!
-
-- Initiator picks a number, and agree to a salt with the player(if you want to prevent rainbow attacks)
-
-- Initiator starts a game with a hashed solution (?)
-
-- Initiator sends 2 public numbers specifying a range and a proof for verification, ie. the 'Clue'. This proof is verified via smart contract before storing the values on the blockchain
-
-- Players submit number guesses to the blockchain
-
-- Initiator reads the number guesses, and submits either 'yay', 'higher' or 'lower' and a proof. The smart contract verifies it, and updates the game state.
-
-- Claims an nft if sucessful
-
-## GameDev Afterthoughts and Insights
-
-- If your game needs 
-
-- Your smart contract is your verifier of whatever the players send
-
-
+4) If computing a witness, `zokrates compute-witness` uses the binary to output a witness file. Then `zokrates generate-proof` uses the binary, the `witness` file, and the `proving.key` to output `proof.json`. You can then use that json as input to your generated solidity contract or use `zokrates verify` that takes the `proof.json` and the `verification.key` from step 1 to verify if the proof is generated correctly.
 
 # References:
 
@@ -60,20 +85,11 @@ https://www.youtube.com/watch?v=YymE69JcKEk
 
 - Sample code for presentation: https://github.com/leanthebean/puzzle-hunt
 
-- Battleships paper https://courses.csail.mit.edu/6.857/2020/projects/13-Gupta-Kaashoek-Wang-Zhao.pdf
-
 - https://github.com/matter-labs/awesome-zero-knowledge-proofs
 
 
-The moment when you realize making zk-proofs from ranges is a harder problem than thought
-- https://crypto.stackexchange.com/questions/53745/is-it-possible-to-create-a-zero-knowledge-proof-that-a-number-is-more-than-zero
-
-- https://crypto.stackexchange.com/questions/42019/zero-knowledge-proof-for-sign-of-message-value/42029#42029
-
-## Todos:
-
-- uploading invalid games via initiate_game_bad and lopsided ranges
-
-- determine gas costs
+## Future Todos:
 
 - deployment to any eth testnet blockchain
+
+- supplement the hash of the secret number with salt(via key strengthening/key stretching)
