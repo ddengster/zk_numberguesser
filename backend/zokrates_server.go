@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -89,6 +88,7 @@ func InitiateGameHandler(response http.ResponseWriter, req *http.Request) {
 	// conversion to array
 	m := payload.([]interface{})
 	//m := (map[string]interface{}) //conversion to key-value pair
+	log.Print("wtf")
 	log.Print(m)
 
 	if len(m) != 3 {
@@ -105,7 +105,13 @@ func InitiateGameHandler(response http.ResponseWriter, req *http.Request) {
 	// run initiate_game.bat and obtain proof.json, then call the transaction
 	compute_proof_file := filepath.Join(zokrates_base_path, "initiate_game.bat")
 	initiate_game_cmd := exec.Command(compute_proof_file, "initiate_game", secret_number, hash, lower_range, upper_range)
-	initiate_game_cmd.Run()
+	var cmd_err = initiate_game_cmd.Run()
+	if cmd_err != nil {
+		log.Print(cmd_err.Error())
+		response.WriteHeader(http.StatusInternalServerError)
+		response.Write([]byte("initiate_game ran into an error!"))
+		return
+	}
 
 	proof_file := filepath.Join(zokrates_base_path, "initiate_game", "proof.json")
 	proof_bytes, file_err := ioutil.ReadFile(proof_file)
@@ -161,10 +167,13 @@ func EvalGuessHandler(response http.ResponseWriter, req *http.Request) {
 	// run compute_proof.bat and obtain proof.json, then call the transaction
 	compute_proof_file := filepath.Join(zokrates_base_path, "eval_guess.bat")
 	eval_guess_cmd := exec.Command(compute_proof_file, "eval_guess", secret_number, hash, guess)
-	var outb, errb bytes.Buffer
-	eval_guess_cmd.Stdout = &outb
-	eval_guess_cmd.Stderr = &errb
-	eval_guess_cmd.Run()
+	var cmd_err = eval_guess_cmd.Run()
+	if cmd_err != nil {
+		log.Print(cmd_err.Error())
+		response.WriteHeader(http.StatusInternalServerError)
+		response.Write([]byte("eval_guess ran into an error!"))
+		return
+	}
 
 	proof_file := filepath.Join(zokrates_base_path, "eval_guess", "proof.json")
 	proof_bytes, file_err := ioutil.ReadFile(proof_file)

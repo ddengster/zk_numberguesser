@@ -104,6 +104,7 @@ contract GuessTheNumberGameLayer is GuessTheNumber, InitiateGameVerifier, EvalGu
     bool valid = EV_verifyTx(proof, io);
     require(valid == true);
 
+    // check the hash proof is the same as the one submitted earlier
     require(game.mHashProof == io[0]);
     
     uint guess = io[1];
